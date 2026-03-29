@@ -42,6 +42,7 @@
 			unsubscribe();
 		};
 	});
+	$: isLastBlock = $blockIdx === $modelMeta?.layer_num - 1;
 </script>
 
 <div class={classNames('mlp', 'mlpUp', 'mlpDown', className)} data-click="mlp-step">
@@ -90,8 +91,8 @@
 			>
 			<OperationGroup type="dropout" id={'mlp-first-dropout'} />
 			<OperationGroup type="residual-end" id={'embedding-residual'} />
-			<OperationGroup type="ln" id={'mlp-first-ln'} />
 			<OperationGroup type="residual-start" id={'mlp-residual'} />
+			<OperationGroup type="ln" id={'mlp-first-ln'} />
 		</div>
 		<div class="layer mlpUp mlpDown second-layer flex justify-between">
 			<div class="column mlp-mid-column">
@@ -123,7 +124,9 @@
 					{/each}
 				</div>
 				<OperationGroup type="residual-end" id={'mlp-residual'} />
-				<OperationGroup type="ln" id={'mlp-second-ln'} />
+				{#if isLastBlock}
+					<OperationGroup type="ln" id={'mlp-second-ln'} />
+				{/if}
 				<div
 					class="column out mlp-out-column"
 					class:last-block={$blockIdx === $modelMeta.layer_num - 1}
